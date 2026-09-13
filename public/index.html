@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>مانیتورینگ فرکانس</title>
+
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+
+  <body>
+    <header class="dashboard-header">
+      <div class="dashboard-title">
+        <h1>مانیتورینگ فرکانس</h1>
+        <p>سیستم مانیتورینگ صنعتی فرکانس</p>
+      </div>
+      <div class="dashboard-datetime">
+        <div class="datetime-label">تاریخ و زمان</div>
+        <div id="dashboard-datetime">--</div>
+      </div>
+
+      <div class="system-status">
+        <span id="status">در حال بارگذاری...</span>
+        <span>۱۰ ترانسدیوسر</span>
+      </div>
+    </header>
+
+    <div id="transducers"></div>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
