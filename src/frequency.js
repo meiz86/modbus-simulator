@@ -3,12 +3,19 @@ function createFrequencyGenerator(config) {
   let frozenFrequency = null;
 
   function update() {
+    if (config.mode === "freeze") {
+      if (frozenFrequency === null) {
+        frozenFrequency = frequency;
+      }
+
+      return frozenFrequency;
+    }
+
     if (config.mode === "spike") {
-      if (Math.random() < 0.1) {
+      if (Math.random() < 0.10) {
         frequency = config.max;
       } else {
-        const change = (Math.random() - 0.5) * 0.04;
-
+        const change = (Math.random() - 0.5) * 0.02;
         frequency += change;
 
         if (frequency < config.min) {
@@ -22,45 +29,48 @@ function createFrequencyGenerator(config) {
 
       return frequency;
     }
-    if (config.mode === "freeze") {
-      if (frozenFrequency === null) {
-        frozenFrequency = frequency;
-      }
 
-      return frozenFrequency;
-    }
     if (config.mode === "low") {
-      frequency = 49.3;
+      frequency = 49.30;
       return frequency;
     }
+
     if (config.mode === "high") {
       frequency = 50.15;
       return frequency;
     }
+
     if (config.mode === "random") {
-      frequency = config.min + Math.random() * (config.max - config.min);
+      frequency =
+        config.min +
+        Math.random() *
+        (config.max - config.min);
 
       return frequency;
     }
 
-    const change = (Math.random() - 0.5) * 0.04;
+    // NORMAL mode
+    const change = (Math.random() - 0.5) * 0.02;
 
     frequency += change;
 
-    if (frequency < config.min) {
-      frequency = config.min;
+    // Keep normal operation safely inside
+    // the normal frequency range.
+    const normalMin = 49.70;
+    const normalMax = 49.95;
+
+    if (frequency < normalMin) {
+      frequency = normalMin;
     }
 
-    if (frequency > config.max) {
-      frequency = config.max;
+    if (frequency > normalMax) {
+      frequency = normalMax;
     }
 
     return frequency;
   }
 
-  return {
-    update,
-  };
+  return { update };
 }
 
 module.exports = createFrequencyGenerator;

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>لیست آلارم‌ها</title>
+
+    <link rel="stylesheet" href="/style.css" />
+</head>
+
+<body>
+    <header class="dashboard-header">
+        <div class="dashboard-title">
+            <h1>لیست آلارم‌ها</h1>
+            <p>مدیریت و مشاهده آلارم‌های سیستم</p>
+        </div>
+
+        <div class="dashboard-datetime">
+            <div class="datetime-label">تاریخ و زمان</div>
+            <div id="dashboard-datetime">--</div>
+        </div>
+
+        <div class="system-status">
+            <a href="/" class="page-link">داشبورد</a>
+            <a href="/event-list.html" class="page-link">رویدادها</a>
+        </div>
+    </header>
+
+    <main class="alarm-page">
+        <div class="page-section-header">
+            <h2>آلارم‌های اخیر</h2>
+
+            <button id="refresh-alarms" class="refresh-button">
+                به‌روزرسانی
+            </button>
+        </div>
+
+        <div class="alarm-table-container">
+            <table class="alarm-table">
+                <thead>
+                    <tr>
+                        <th>وضعیت</th>
+                        <th>ترانسدیوسر</th>
+                        <th>پیام</th>
+                        <th>فرکانس</th>
+                        <th>زمان</th>
+                    </tr>
+                </thead>
+
+                <tbody id="alarm-table-body">
+                    <tr>
+                        <td colspan="5">
+                            در حال بارگذاری...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="/alarm-list.js"></script>
+</body>
+
+</html>

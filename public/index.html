@@ -1,33 +1,55 @@
 <!doctype html>
 <html lang="fa" dir="rtl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>مانیتورینگ فرکانس</title>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="stylesheet" href="/style.css" />
-  </head>
+  <title>مانیتورینگ فرکانس</title>
 
-  <body>
-    <header class="dashboard-header">
-      <div class="dashboard-title">
-        <h1>مانیتورینگ فرکانس</h1>
-        <p>سیستم مانیتورینگ صنعتی فرکانس</p>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+
+<body>
+  <header class="dashboard-header">
+    <div class="dashboard-title">
+      <h1>مانیتورینگ فرکانس</h1>
+      <p>سیستم مانیتورینگ صنعتی فرکانس</p>
+    </div>
+
+    <div class="dashboard-datetime">
+      <div class="datetime-label">تاریخ و زمان</div>
+      <div id="dashboard-datetime">--</div>
+    </div>
+
+    <div class="system-status">
+      <span id="status">در حال بارگذاری...</span>
+      <span>۱۰ ترانسدیوسر</span>
+    </div>
+  </header>
+
+  <!-- Alarm banner -->
+  <section id="alarm-banner" class="alarm-banner alarm-banner-hidden">
+    <div class="alarm-banner-icon">⚠️</div>
+
+    <div class="alarm-banner-content">
+      <div id="alarm-banner-title">
+        هشدار
       </div>
-      <div class="dashboard-datetime">
-        <div class="datetime-label">تاریخ و زمان</div>
-        <div id="dashboard-datetime">--</div>
+
+      <div id="alarm-banner-message">
+        --
       </div>
+    </div>
 
-      <div class="system-status">
-        <span id="status">در حال بارگذاری...</span>
-        <span>۱۰ ترانسدیوسر</span>
-      </div>
-    </header>
+    <div id="alarm-banner-time" class="alarm-banner-time">
+      --
+    </div>
+  </section>
 
-    <div id="transducers"></div>
+  <div id="transducers"></div>
 
-    <script src="/app.js"></script>
-  </body>
+  <script src="/app.js"></script>
+</body>
+
 </html>

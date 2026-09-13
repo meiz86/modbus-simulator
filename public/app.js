@@ -1,6 +1,7 @@
 const container = document.getElementById("transducers");
 const status = document.getElementById("status");
 
+
 function toPersianDigits(value) {
   return String(value).replace(/\d/g, (digit) => "۰۱۲۳۴۵۶۷۸۹"[digit]);
 }
@@ -206,6 +207,112 @@ async function loadTransducers() {
     status.textContent = "🟢 وضعیت تمام سیستم‌ها عادی است";
   }
 }
+function formatAlarmTime(timestamp) {
+  if (!timestamp) {
+    return "--";
+  }
+
+  const date = new Date(timestamp);
+
+  const formatter =
+    new Intl.DateTimeFormat("fa-IR", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+
+  return formatter.format(date);
+}
+async function loadLatestAlarm() {
+  const banner = document.getElementById("alarm-banner");
+  const title = document.getElementById("alarm-banner-title");
+  const message = document.getElementById("alarm-banner-message");
+  const time = document.getElementById("alarm-banner-time");
+
+  try {
+    const response = await fetch("/api/alarms/current");
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const states = await response.json();
+
+    const transducers = Object.values(states);
+
+    const activeAlarms = transducers.filter(
+      (state) => state.state === "ALARM"
+    );
+
+    const warnings = transducers.filter(
+      (state) => state.state === "WARNING"
+    );
+
+    // Highest priority: ALARM
+    if (activeAlarms.length > 0) {
+      const alarm = activeAlarms[0];
+
+      banner.className =
+        "alarm-banner alarm-banner-alarm";
+
+      title.textContent =
+        `🔴 آلارم — ترانسدیوسر ${toPersianDigits(
+          alarm.transducer_id,
+        )}`;
+
+      message.textContent =
+        `${alarm.message}`;
+
+      time.textContent =
+        formatAlarmTime(alarm.updated_at);
+
+      return;
+    }
+
+    // Second priority: WARNING
+    if (warnings.length > 0) {
+      const warning = warnings[0];
+
+      banner.className =
+        "alarm-banner alarm-banner-warning";
+
+      title.textContent =
+        `🟠 هشدار — ترانسدیوسر ${toPersianDigits(
+          warning.transducer_id,
+        )}`;
+
+      message.textContent =
+        `${warning.message}`;
+
+      time.textContent =
+        formatAlarmTime(warning.updated_at);
+
+      return;
+    }
+
+    // Everything normal
+    banner.className =
+      "alarm-banner alarm-banner-cleared";
+
+    title.textContent =
+      "🟢 وضعیت سیستم";
+
+    message.textContent =
+      "تمام ترانسدیوسرها در وضعیت عادی هستند";
+
+    time.textContent =
+      formatAlarmTime(
+        transducers.length > 0
+          ? transducers[0].updated_at
+          : null,
+      );
+  } catch (error) {
+    console.error(
+      "خطای دریافت وضعیت آلارم:",
+      error,
+    );
+  }
+}
 
 async function loadFrequencyHistories() {
   const requests = [];
@@ -285,7 +392,7 @@ function drawTransducerChart(id, data) {
   /*
     Background grid
   */
-  ctx.strokeStyle = "#e5e5e5";
+  ctx.strokeStyle = "#252525";
   ctx.lineWidth = 1;
 
   const gridValues = [49.4, 49.6, 49.8, 50.0];
@@ -311,8 +418,7 @@ function drawTransducerChart(id, data) {
 
   ctx.lineTo(width - paddingRight, yPosition(minFrequency));
 
-  ctx.strokeStyle = "#999";
-  ctx.lineWidth = 1;
+  ctx.strokeStyle = "#555"; ctx.lineWidth = 1;
 
   ctx.stroke();
 
@@ -325,8 +431,7 @@ function drawTransducerChart(id, data) {
 
   ctx.lineTo(width - paddingRight, yPosition(maxFrequency));
 
-  ctx.strokeStyle = "#999";
-
+  ctx.strokeStyle = "#555";
   ctx.stroke();
 
   /*
@@ -338,8 +443,7 @@ function drawTransducerChart(id, data) {
 
   ctx.lineTo(width - paddingRight, yPosition(nominalFrequency));
 
-  ctx.strokeStyle = "#777";
-
+  ctx.strokeStyle = "#555";
   ctx.setLineDash([5, 5]);
 
   ctx.stroke();
@@ -363,8 +467,7 @@ function drawTransducerChart(id, data) {
     }
   });
 
-  ctx.strokeStyle = "#333";
-  ctx.lineWidth = 2.5;
+  ctx.strokeStyle = "#39d98a"; ctx.lineWidth = 2.5;
   ctx.lineJoin = "round";
   ctx.lineCap = "round";
 
@@ -375,23 +478,21 @@ function drawTransducerChart(id, data) {
   */
   const labelX = width - paddingRight + 1;
 
-  ctx.fillStyle = "#333";
-  ctx.font = "bold 12px Arial";
+  ctx.fillStyle = "#d8d8d8"; ctx.font = "bold 12px Arial";
   ctx.textAlign = "left";
   ctx.textBaseline = "middle";
 
-  ctx.fillText("50.2 هرتز", labelX, yPosition(maxFrequency) + 2);
+  ctx.fillText("    50.2Hz", labelX, yPosition(maxFrequency) + 2);
 
-  ctx.fillText("50 هرتز", labelX, yPosition(nominalFrequency));
+  ctx.fillText("    50Hz", labelX, yPosition(nominalFrequency));
 
-  ctx.fillText("49.2 هرتز", labelX, yPosition(minFrequency) + 2);
+  ctx.fillText("    49.2Hz", labelX, yPosition(minFrequency) + 2);
 
   /*
     Latest value
   */
   ctx.font = "bold 11px Arial";
-  ctx.fillStyle = "#333";
-  ctx.textAlign = "right";
+  ctx.fillStyle = "#39d98a"; ctx.textAlign = "right";
 
   ctx.fillText(
     `آخرین مقدار: ${toPersianDigits(latestFrequency.toFixed(2))} هرتز`,
@@ -406,18 +507,24 @@ function drawTransducerChart(id, data) {
 updateDashboardDateTime();
 loadTransducers();
 loadFrequencyHistories();
+loadLatestAlarm();
 
-/*
-  Update dashboard date/time every second
-*/
-setInterval(updateDashboardDateTime, 1000);
+setInterval(
+  updateDashboardDateTime,
+  1000,
+);
 
-/*
-  Update transducer status every second
-*/
-setInterval(loadTransducers, 1000);
+setInterval(
+  loadTransducers,
+  1000,
+);
 
-/*
-  Update charts every second
-*/
-setInterval(loadFrequencyHistories, 1000);
+setInterval(
+  loadFrequencyHistories,
+  1000,
+);
+
+setInterval(
+  loadLatestAlarm,
+  1000,
+);

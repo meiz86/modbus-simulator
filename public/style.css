@@ -1,7 +1,16 @@
+/* =========================================================
+   Main Dashboard
+   ========================================================= */
+
 body {
   font-family: Arial, sans-serif;
+
   margin: 30px;
-  background: #f5f5f5;
+
+  background: #000000;
+
+  color: #f2f2f2;
+
   direction: rtl;
   text-align: right;
 }
@@ -14,21 +23,42 @@ h1 {
   margin-bottom: 20px;
 }
 
+
+/* =========================================================
+   Transducers Grid
+   ========================================================= */
+
 #transducers {
   display: grid;
+
   grid-template-columns: repeat(2, 1fr);
+
   gap: 15px;
 }
 
+
+/* =========================================================
+   Transducer Card
+   ========================================================= */
+
 .transducer {
-  background: white;
+  background: #111111;
+
   padding: 20px;
+
+  border: 1px solid #252525;
+
   border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.7);
 
   display: grid;
+
   grid-template-columns: 220px 1fr;
+
   gap: 20px;
+
   align-items: center;
 
   direction: rtl;
@@ -38,34 +68,58 @@ h1 {
   min-width: 0;
 }
 
+.transducer-info h2 {
+  color: #ffffff;
+
+  margin-top: 0;
+}
+
+
+/* =========================================================
+   Frequency
+   ========================================================= */
+
 .frequency {
   font-size: 32px;
+
+  font-weight: bold;
+
+  letter-spacing: 0.5px;
+}
+
+.frequency-normal {
+  color: #39d98a;
+}
+
+.frequency-alarm {
+  color: #ff4d5a;
+
   font-weight: bold;
 }
 
+
+/* =========================================================
+   Status Colors
+   ========================================================= */
+
 .status-ok {
-  color: green;
+  color: #39d98a;
+
   font-weight: bold;
 }
 
 .status-stale {
-  color: orange;
+  color: #ffb84d;
+
   font-weight: bold;
 }
 
 .status-error {
-  color: red;
+  color: #ff4d5a;
+
   font-weight: bold;
 }
 
-.frequency-normal {
-  color: green;
-}
-
-.frequency-alarm {
-  color: red;
-  font-weight: bold;
-}
 
 /* =========================================================
    Dashboard Header
@@ -76,20 +130,24 @@ h1 {
 
   height: 108px;
 
-  background: white;
+  background: #111111;
 
   padding: 20px;
 
   margin-bottom: 20px;
 
+  border: 1px solid #252525;
+
   border-radius: 8px;
 
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.7);
 
   direction: rtl;
 
   box-sizing: border-box;
 }
+
 
 /* =========================================================
    Dashboard Title — TOP RIGHT
@@ -108,13 +166,18 @@ h1 {
 
 .dashboard-header h1 {
   margin: 0;
+
+  color: #ffffff;
+
+  font-size: 28px;
 }
 
 .dashboard-header p {
   margin: 5px 0 0;
 
-  color: #666;
+  color: #888888;
 }
+
 
 /* =========================================================
    Date and Time — TOP CENTER
@@ -124,6 +187,7 @@ h1 {
   position: absolute;
 
   top: 20px;
+
   left: 50%;
 
   transform: translateX(-50%);
@@ -134,8 +198,8 @@ h1 {
 
   min-width: 300px;
 
-  border-right: 1px solid #e5e5e5;
-  border-left: 1px solid #e5e5e5;
+  border-right: 1px solid #303030;
+  border-left: 1px solid #303030;
 
   direction: rtl;
 }
@@ -143,7 +207,7 @@ h1 {
 .datetime-label {
   font-size: 13px;
 
-  color: #777;
+  color: #888888;
 
   margin-bottom: 6px;
 
@@ -155,12 +219,13 @@ h1 {
 
   font-weight: bold;
 
-  color: #333;
+  color: #f2f2f2;
 
   white-space: nowrap;
 
   direction: rtl;
 }
+
 
 /* =========================================================
    System Status — TOP LEFT
@@ -186,95 +251,7 @@ h1 {
 
   text-align: left;
 }
-/* =========================================================
-   Dashboard Title
-   ========================================================= */
 
-.dashboard-title {
-  grid-column: 3;
-
-  text-align: right;
-
-  direction: rtl;
-}
-
-.dashboard-header h1 {
-  margin: 0;
-}
-
-.dashboard-header p {
-  margin: 5px 0 0;
-
-  color: #666;
-}
-
-/* =========================================================
-   Date and Time — Center
-   ========================================================= */
-
-.dashboard-datetime {
-  grid-column: 2;
-
-  align-self: start;
-
-  text-align: center;
-
-  padding: 0 35px;
-
-  min-width: 300px;
-
-  border-right: 1px solid #e5e5e5;
-  border-left: 1px solid #e5e5e5;
-
-  direction: rtl;
-}
-
-.datetime-label {
-  font-size: 13px;
-
-  color: #777;
-
-  margin-bottom: 6px;
-
-  font-weight: bold;
-}
-
-#dashboard-datetime {
-  font-size: 21px;
-
-  font-weight: bold;
-
-  color: #333;
-
-  white-space: nowrap;
-
-  direction: rtl;
-}
-
-/* =========================================================
-   System Status — Top Left
-   ========================================================= */
-
-.system-status {
-  position: absolute;
-
-  top: 20px;
-  left: 20px;
-
-  display: flex;
-
-  flex-direction: column;
-
-  align-items: flex-start;
-
-  gap: 8px;
-
-  font-weight: bold;
-
-  direction: rtl;
-
-  text-align: left;
-}
 
 /* =========================================================
    Transducer Chart
@@ -285,18 +262,15 @@ h1 {
 
   height: 180px;
 
-  border: 1px solid #ddd;
+  background: #090909;
+
+  /* border: 1px solid #292929; */
 
   border-radius: 6px;
 
   padding: 8px;
 
   box-sizing: border-box;
-
-  /*
-    Keep chart coordinate system LTR.
-    Time progresses from left to right.
-  */
 
   direction: ltr;
 }
@@ -314,7 +288,7 @@ h1 {
 
   font-weight: bold;
 
-  color: #555;
+  color: #a0a0a0;
 
   margin-bottom: 6px;
 
@@ -323,11 +297,30 @@ h1 {
   text-align: right;
 }
 
+
+/* =========================================================
+   Measurement Age
+   ========================================================= */
+
+.age {
+  color: #888888;
+}
+
+.frequency-status {
+  color: #cccccc;
+}
+
+.communication-status {
+  color: #cccccc;
+}
+
+
 /* =========================================================
    Mobile
    ========================================================= */
 
 @media (max-width: 700px) {
+
   #transducers {
     grid-template-columns: 1fr;
   }
@@ -337,46 +330,118 @@ h1 {
   }
 
   .dashboard-header {
-    display: grid;
+    height: 180px;
 
-    grid-template-columns: 1fr;
-
-    gap: 15px;
-
-    text-align: center;
-
-    padding-top: 80px;
-
-    direction: rtl;
+    padding-top: 20px;
   }
 
   .dashboard-title {
-    grid-column: 3;
+    position: absolute;
 
-    text-align: right;
+    top: 20px;
+    right: 20px;
+    left: 20px;
+
+    text-align: center;
   }
 
   .dashboard-datetime {
-    grid-column: 2;
+    top: 85px;
 
-    align-self: start;
+    left: 20px;
+    right: 20px;
 
-    text-align: center;
+    transform: none;
 
-    padding: 0 35px;
+    min-width: 0;
 
-    min-width: 300px;
+    padding: 8px 0;
 
-    border-right: 1px solid #e5e5e5;
-    border-left: 1px solid #e5e5e5;
+    border-right: none;
+    border-left: none;
 
-    direction: rtl;
+    border-top: 1px solid #303030;
+    border-bottom: 1px solid #303030;
   }
+
   .system-status {
-    top: 20px;
+    top: 135px;
 
     left: 20px;
 
     align-items: flex-start;
   }
+}
+
+.alarm-banner {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  min-height: 65px;
+
+  margin-bottom: 20px;
+  padding: 12px 18px;
+
+  background: #181818;
+  border: 1px solid #444444;
+  border-radius: 8px;
+
+  box-sizing: border-box;
+}
+
+
+.alarm-banner-icon {
+  font-size: 28px;
+}
+
+.alarm-banner-content {
+  flex: 1;
+}
+
+#alarm-banner-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+#alarm-banner-message {
+  font-size: 14px;
+  color: #cccccc;
+}
+
+.alarm-banner-time {
+  font-size: 13px;
+  color: #888888;
+  white-space: nowrap;
+}
+
+/* Active alarm */
+.alarm-banner-alarm {
+  background: #2a0d0d;
+  border-color: #ff4d5a;
+}
+
+.alarm-banner-alarm #alarm-banner-title {
+  color: #ff4d5a;
+}
+
+/* Warning */
+.alarm-banner-warning {
+  background: #2a210d;
+  border-color: #ffb84d;
+}
+
+.alarm-banner-warning #alarm-banner-title {
+  color: #ffb84d;
+}
+
+/* Cleared */
+.alarm-banner-cleared {
+  background: #0d2418;
+  border-color: #39d98a;
+}
+
+.alarm-banner-cleared #alarm-banner-title {
+  color: #39d98a;
 }

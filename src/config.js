@@ -3,7 +3,7 @@ const config = {
 
   transducers: [
     { id: 1, port: 15001, mode: "normal", updateIntervalMs: 1000 },
-    { id: 2, port: 15001, mode: "normal", updateIntervalMs: 1000 },
+    { id: 2, port: 15002, mode: "normal", updateIntervalMs: 1000 },
     { id: 3, port: 15003, mode: "normal", updateIntervalMs: 1000 },
     { id: 4, port: 15004, mode: "normal", updateIntervalMs: 1000 },
     { id: 5, port: 15005, mode: "normal", updateIntervalMs: 1000 },
@@ -15,10 +15,25 @@ const config = {
   ],
 
   frequency: {
-    min: 49.2,
-    max: 50.2,
-    nominal: 50.0,
+    min: 49.20,
+    max: 50.20,
+    nominal: 50.00,
     scale: 100,
+  },
+
+  alarm: {
+    frequency: {
+      lowAlarm: 49.20,
+      lowWarning: 49.50,
+
+      highWarning: 49.8,
+      highAlarm: 50.20,
+    },
+
+    communication: {
+      staleAfterSeconds: 5,
+      alarmAfterSeconds: 10,
+    },
   },
 };
 
