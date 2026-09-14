@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>روند فرکانس</title>
+
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+
+  <body>
+    <header class="page-header">
+      <h1>📈 روند فرکانس</h1>
+
+      <a href="/"> بازگشت به داشبورد </a>
+    </header>
+
+    <div class="trend-controls">
+      <label> ترانسدیوسر: </label>
+
+      <select id="transducer-select">
+        <option value="1">ترانسدیوسر ۱</option>
+
+        <option value="2">ترانسدیوسر ۲</option>
+
+        <option value="3">ترانسدیوسر ۳</option>
+      </select>
+
+      <button id="load-trend">نمایش</button>
+      <button id="reset-zoom">بازنشانی زوم</button>
+    </div>
+
+    <div id="statistics"></div>
+
+    <div class="trend-chart">
+      <canvas id="frequency-chart"> </canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+    <script src="/trends.js"></script>
+  </body>
+</html>

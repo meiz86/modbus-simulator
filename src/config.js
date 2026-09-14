@@ -24,10 +24,10 @@ const config = {
   alarm: {
     frequency: {
       lowAlarm: 49.20,
-      lowWarning: 49.50,
+      lowWarning: 49.70,
 
-      highWarning: 49.8,
-      highAlarm: 50.20,
+      highWarning: 50.01,
+      highAlarm: 50.1,
     },
 
     communication: {

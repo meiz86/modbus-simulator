@@ -33,13 +33,16 @@ function saveAlarmEvent(event) {
     event.alarmCode,
     event.message,
     event.frequency,
-    event.timestamp.toISOString()
+    event.timestamp
+      ? new Date(event.timestamp).toISOString()
+      : new Date().toISOString(),
   );
 }
 
 function getRecentAlarmEvents(limit = 100) {
   return db
-    .prepare(`
+    .prepare(
+      `
       SELECT
         id,
         transducer_id,
@@ -51,15 +54,14 @@ function getRecentAlarmEvents(limit = 100) {
       FROM alarm_events
       ORDER BY id DESC
       LIMIT ?
-    `)
+    `,
+    )
     .all(limit);
 }
-function getRecentAlarmEventsByTransducer(
-  transducerId,
-  limit = 100
-) {
+function getRecentAlarmEventsByTransducer(transducerId, limit = 100) {
   return db
-    .prepare(`
+    .prepare(
+      `
       SELECT
         id,
         transducer_id,
@@ -72,12 +74,13 @@ function getRecentAlarmEventsByTransducer(
       WHERE transducer_id = ?
       ORDER BY id DESC
       LIMIT ?
-    `)
+    `,
+    )
     .all(transducerId, limit);
 }
 
 module.exports = {
   saveAlarmEvent,
   getRecentAlarmEvents,
-  getRecentAlarmEventsByTransducer
+  getRecentAlarmEventsByTransducer,
 };

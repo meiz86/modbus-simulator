@@ -1,55 +1,53 @@
 <!doctype html>
 <html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>مانیتورینگ فرکانس</title>
 
-  <title>مانیتورینگ فرکانس</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
 
-  <link rel="stylesheet" href="/style.css" />
-</head>
-
-<body>
-  <header class="dashboard-header">
-    <div class="dashboard-title">
-      <h1>مانیتورینگ فرکانس</h1>
-      <p>سیستم مانیتورینگ صنعتی فرکانس</p>
-    </div>
-
-    <div class="dashboard-datetime">
-      <div class="datetime-label">تاریخ و زمان</div>
-      <div id="dashboard-datetime">--</div>
-    </div>
-
-    <div class="system-status">
-      <span id="status">در حال بارگذاری...</span>
-      <span>۱۰ ترانسدیوسر</span>
-    </div>
-  </header>
-
-  <!-- Alarm banner -->
-  <section id="alarm-banner" class="alarm-banner alarm-banner-hidden">
-    <div class="alarm-banner-icon">⚠️</div>
-
-    <div class="alarm-banner-content">
-      <div id="alarm-banner-title">
-        هشدار
+  <body>
+    <header class="dashboard-header">
+      <div class="dashboard-title">
+        <h1>مانیتورینگ فرکانس</h1>
+        <p>سیستم مانیتورینگ صنعتی فرکانس</p>
       </div>
 
-      <div id="alarm-banner-message">
-        --
+      <div class="dashboard-datetime">
+        <div class="datetime-label">تاریخ و زمان</div>
+        <div id="dashboard-datetime">--</div>
       </div>
-    </div>
 
-    <div id="alarm-banner-time" class="alarm-banner-time">
-      --
-    </div>
-  </section>
+      <div class="system-status">
+        <span id="status">در حال بارگذاری...</span>
+        <span>۱۰ ترانسدیوسر</span>
+      </div>
+    </header>
+    <header>
+      <div class="dashboard-menu">
+        <a href="/alarms.html"> 🚨 آلارم‌ها </a>
 
-  <div id="transducers"></div>
+        <a href="/events.html"> 📜 رویدادها </a>
+      </div>
+    </header>
+    <!-- Alarm banner -->
+    <section id="alarm-banner" class="alarm-banner alarm-banner-hidden">
+      <div class="alarm-banner-icon">⚠️</div>
 
-  <script src="/app.js"></script>
-</body>
+      <div class="alarm-banner-content">
+        <div id="alarm-banner-title">هشدار</div>
 
+        <div id="alarm-banner-message">--</div>
+      </div>
+
+      <div id="alarm-banner-time" class="alarm-banner-time">--</div>
+    </section>
+
+    <div id="transducers"></div>
+
+    <script src="/app.js"></script>
+  </body>
 </html>

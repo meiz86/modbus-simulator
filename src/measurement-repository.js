@@ -11,14 +11,19 @@ function getRecentByTransducer(transducerId, limit = 100) {
   return database.getRecentMeasurementsByTransducer(transducerId, limit);
 }
 function getLatestByTransducer(transducerId) {
-  return database.getLatestMeasurementByTransducer(
-    transducerId
-  );
+  return database.getLatestMeasurementByTransducer(transducerId);
 }
-
+function getByTimeRange(transducerId, from, to) {
+  return database.getMeasurementsByTimeRange(transducerId, from, to);
+}
+function getStats(transducerId, from, to) {
+  return database.getMeasurementStats(transducerId, from, to);
+}
 module.exports = {
   save,
   getRecent,
   getRecentByTransducer,
-  getLatestByTransducer
+  getLatestByTransducer,
+  getByTimeRange,
+  getStats,
 };

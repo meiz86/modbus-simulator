@@ -23,7 +23,6 @@ h1 {
   margin-bottom: 20px;
 }
 
-
 /* =========================================================
    Transducers Grid
    ========================================================= */
@@ -35,7 +34,6 @@ h1 {
 
   gap: 15px;
 }
-
 
 /* =========================================================
    Transducer Card
@@ -50,8 +48,7 @@ h1 {
 
   border-radius: 8px;
 
-  box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
 
   display: grid;
 
@@ -74,7 +71,6 @@ h1 {
   margin-top: 0;
 }
 
-
 /* =========================================================
    Frequency
    ========================================================= */
@@ -88,16 +84,19 @@ h1 {
 }
 
 .frequency-normal {
-  color: #39d98a;
-}
-
-.frequency-alarm {
-  color: #ff4d5a;
-
+  color: #00e676;
   font-weight: bold;
 }
 
+.frequency-warning {
+  color: #ffc400;
+  font-weight: bold;
+}
 
+.frequency-alarm {
+  color: #ff1744;
+  font-weight: bold;
+}
 /* =========================================================
    Status Colors
    ========================================================= */
@@ -120,7 +119,6 @@ h1 {
   font-weight: bold;
 }
 
-
 /* =========================================================
    Dashboard Header
    ========================================================= */
@@ -140,14 +138,12 @@ h1 {
 
   border-radius: 8px;
 
-  box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
 
   direction: rtl;
 
   box-sizing: border-box;
 }
-
 
 /* =========================================================
    Dashboard Title — TOP RIGHT
@@ -177,7 +173,6 @@ h1 {
 
   color: #888888;
 }
-
 
 /* =========================================================
    Date and Time — TOP CENTER
@@ -226,7 +221,6 @@ h1 {
   direction: rtl;
 }
 
-
 /* =========================================================
    System Status — TOP LEFT
    ========================================================= */
@@ -251,7 +245,6 @@ h1 {
 
   text-align: left;
 }
-
 
 /* =========================================================
    Transducer Chart
@@ -297,7 +290,6 @@ h1 {
   text-align: right;
 }
 
-
 /* =========================================================
    Measurement Age
    ========================================================= */
@@ -314,13 +306,11 @@ h1 {
   color: #cccccc;
 }
 
-
 /* =========================================================
    Mobile
    ========================================================= */
 
 @media (max-width: 700px) {
-
   #transducers {
     grid-template-columns: 1fr;
   }
@@ -390,7 +380,6 @@ h1 {
   box-sizing: border-box;
 }
 
-
 .alarm-banner-icon {
   font-size: 28px;
 }
@@ -444,4 +433,170 @@ h1 {
 
 .alarm-banner-cleared #alarm-banner-title {
   color: #39d98a;
+}
+/* ==========================
+   Alarm / Event Pages
+   ========================== */
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  background: #111;
+  color: white;
+
+  padding: 20px 30px;
+
+  border-radius: 10px;
+
+  margin-bottom: 20px;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.page-header h1 {
+  margin: 0;
+
+  font-size: 28px;
+}
+
+.page-header a {
+  color: #00d9ff;
+
+  text-decoration: none;
+
+  font-weight: bold;
+}
+
+.page-header a:hover {
+  text-decoration: underline;
+}
+
+/* Alarm cards */
+
+.alarm-card {
+  background: #181818;
+
+  color: white;
+
+  padding: 20px;
+
+  margin-bottom: 15px;
+
+  border-radius: 10px;
+
+  border-right: 8px solid;
+
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.6);
+}
+
+.alarm-danger {
+  border-color: #ff3030;
+}
+
+.alarm-warning {
+  border-color: #ffae00;
+}
+
+.alarm-card h2 {
+  margin-top: 0;
+}
+
+.alarm-card button {
+  background: #007bff;
+
+  color: white;
+
+  border: none;
+
+  padding: 10px 20px;
+
+  border-radius: 6px;
+
+  cursor: pointer;
+
+  font-size: 16px;
+}
+
+.alarm-card button:hover {
+  background: #005fcc;
+}
+
+/* Event cards */
+
+.event-card {
+  background: #151515;
+
+  color: white;
+
+  padding: 18px;
+
+  margin-bottom: 12px;
+
+  border-radius: 8px;
+
+  border-right: 5px solid #555;
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.event-card h2 {
+  margin-top: 0;
+}
+
+.no-alarm,
+.no-event {
+  background: #111;
+
+  color: #00ff88;
+
+  padding: 30px;
+
+  text-align: center;
+
+  font-size: 22px;
+
+  border-radius: 10px;
+}
+
+/* Navigation buttons */
+
+.dashboard-menu {
+  display: flex;
+
+  gap: 15px;
+
+  margin-bottom: 20px;
+}
+
+.dashboard-menu a {
+  background: #222;
+
+  color: white;
+
+  padding: 12px 20px;
+
+  border-radius: 8px;
+
+  text-decoration: none;
+}
+
+.dashboard-menu a:hover {
+  background: #333;
+}
+.transducer.state-normal {
+  border-right: 8px solid #00c853;
+}
+
+.transducer.state-warning {
+  border-right: 8px solid #ffc400;
+}
+
+.transducer.state-alarm {
+  border-right: 8px solid #ff1744;
+}
+.frequency-warning {
+  color: #ffc400;
+  font-weight: bold;
 }
