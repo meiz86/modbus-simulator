@@ -17,7 +17,7 @@ socket.connect(PORT, HOST, async () => {
       const value = response.response.body.valuesAsArray[0];
       const frequency = value / 100;
 
-      console.log(`Frequency: ${frequency.toFixed(2)} Hz`);
+      // console.log(`Frequency: ${frequency.toFixed(2)} Hz`);
     } catch (err) {
       console.error("Read error:", err.message);
     }

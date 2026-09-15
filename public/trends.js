@@ -1,99 +1,177 @@
 let chart;
+let customFromPicker;
+let customToPicker;
 let FREQUENCY_LIMITS = null;
-let FREQUENCY_CONFIG = null;
-let config = null;
 
 async function loadConfig() {
   const response = await fetch("/api/config");
 
+  if (!response.ok) {
+    throw new Error("Failed to load configuration");
+  }
+
   const data = await response.json();
 
-  FREQUENCY_CONFIG = data.frequency;
-  config = FREQUENCY_CONFIG;
   FREQUENCY_LIMITS = data.frequency;
 }
-async function loadTrend() {
-  if (!FREQUENCY_LIMITS) {
-    await loadConfig();
-  }
-  const transducerId = document.getElementById("transducer-select").value;
 
+function getQuickRange(minutes) {
   const to = new Date();
 
-  const from = new Date(to.getTime() - 60 * 60 * 1000);
+  const from = new Date(to.getTime() - minutes * 60 * 1000);
 
-  const url =
-    `/api/trends/${transducerId}` +
-    `?from=${from.toISOString()}` +
-    `&to=${to.toISOString()}`;
+  return {
+    from,
+    to,
+  };
+}
 
-  const response = await fetch(url);
+function getCustomRange() {
+  if (!customFromPicker || !customToPicker) {
+    return null;
+  }
 
-  const data = await response.json();
+  const from = customFromPicker.getDate();
+  const to = customToPicker.getDate();
 
-  updateStatistics(data.statistics);
+  if (
+    !(from instanceof Date) ||
+    Number.isNaN(from.getTime()) ||
+    !(to instanceof Date) ||
+    Number.isNaN(to.getTime())
+  ) {
+    return null;
+  }
 
-  updateChart(data.measurements);
+  if (from >= to) {
+    alert("زمان شروع باید قبل از زمان پایان باشد.");
+    return null;
+  }
+
+  return {
+    from,
+    to,
+  };
+}
+
+function updateCustomRangeVisibility() {
+  const rangeSelect = document.getElementById("range-select");
+
+  const customRange = document.getElementById("custom-range");
+
+  if (rangeSelect.value === "custom") {
+    customRange.classList.add("visible");
+  } else {
+    customRange.classList.remove("visible");
+  }
+}
+
+async function loadTrend() {
+  try {
+    if (!FREQUENCY_LIMITS) {
+      await loadConfig();
+    }
+
+    const transducerId = document.getElementById("transducer-select").value;
+
+    const rangeValue = document.getElementById("range-select").value;
+
+    let range;
+
+    if (rangeValue === "custom") {
+      range = getCustomRange();
+
+      if (!range) {
+        alert("لطفاً تاریخ و زمان شروع و پایان را انتخاب کنید.");
+
+        return;
+      }
+    } else {
+      range = getQuickRange(Number(rangeValue));
+    }
+
+    if (range.from >= range.to) {
+      alert("زمان شروع باید قبل از زمان پایان باشد.");
+
+      return;
+    }
+
+    const url =
+      `/api/trends/${transducerId}` +
+      `?from=${encodeURIComponent(range.from.toISOString())}` +
+      `&to=${encodeURIComponent(range.to.toISOString())}`;
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error("Failed to load trend data");
+    }
+
+    const data = await response.json();
+
+    updateStatistics(data.statistics);
+
+    updateChart(data.measurements);
+  } catch (error) {
+    console.error("Trend loading error:", error);
+
+    alert("خطا در دریافت اطلاعات روند.");
+  }
 }
 
 function updateStatistics(stats) {
   document.getElementById("statistics").innerHTML = `
-
     <div class="event-card">
 
-      <h2>
-      آمار فرکانس
-      </h2>
+      <h2>آمار فرکانس</h2>
 
       <p>
-      حداقل:
-      ${stats.min?.toFixed(2)}
-      Hz
+        حداقل:
+        ${
+          stats.min !== null && stats.min !== undefined
+            ? stats.min.toFixed(2)
+            : "--"
+        }
+        Hz
       </p>
 
       <p>
-      حداکثر:
-      ${stats.max?.toFixed(2)}
-      Hz
+        حداکثر:
+        ${
+          stats.max !== null && stats.max !== undefined
+            ? stats.max.toFixed(2)
+            : "--"
+        }
+        Hz
       </p>
 
       <p>
-      میانگین:
-      ${stats.average?.toFixed(2)}
-      Hz
+        میانگین:
+        ${
+          stats.average !== null && stats.average !== undefined
+            ? stats.average.toFixed(2)
+            : "--"
+        }
+        Hz
       </p>
 
       <p>
-      تعداد نمونه:
-      ${stats.count}
+        تعداد نمونه:
+        ${stats.count ?? 0}
       </p>
 
     </div>
-
   `;
 }
-function createLimitLine(value, label) {
-  return {
-    label: label,
 
-    data: Array(chartLabelsLength).fill(value),
-
-    borderWidth: 1,
-
-    pointRadius: 0,
-
-    borderDash: [6, 6],
-  };
-}
 function updateChart(measurements) {
-  const labels = measurements.map((m) =>
-    new Date(m.timestamp).toLocaleTimeString("fa-IR"),
+  const labels = measurements.map((measurement) =>
+    new Date(measurement.timestamp).toLocaleTimeString("fa-IR"),
   );
 
-  const values = measurements.map((m) => m.frequency);
+  const values = measurements.map((measurement) => measurement.frequency);
 
   const limits = FREQUENCY_LIMITS;
-  const config = FREQUENCY_CONFIG;
 
   const ctx = document.getElementById("frequency-chart").getContext("2d");
 
@@ -215,6 +293,7 @@ function updateChart(measurements) {
             },
           },
         },
+
         legend: {
           labels: {
             color: "#ffffff",
@@ -261,9 +340,10 @@ function updateChart(measurements) {
           ticks: {
             color: "#aaa",
           },
-          min: FREQUENCY_LIMITS.lowAlarm - 0.1,
 
-          max: FREQUENCY_LIMITS.highAlarm + 0.1,
+          min: limits.lowAlarm - 0.1,
+
+          max: limits.highAlarm + 0.1,
 
           grid: {
             color: "#333",
@@ -282,9 +362,37 @@ function updateChart(measurements) {
   });
 }
 
+document
+  .getElementById("range-select")
+  .addEventListener("change", updateCustomRangeVisibility);
+
+customFromPicker = new JalaliDateTimePicker(
+  document.getElementById("custom-from"),
+);
+
+customToPicker = new JalaliDateTimePicker(document.getElementById("custom-to"));
+
+// Default custom range: last 1 hour.
+const defaultTo = new Date();
+
+const defaultFrom = new Date(defaultTo.getTime() - 60 * 60 * 1000);
+
+customFromPicker.setDate(defaultFrom);
+
+customToPicker.setDate(defaultTo);
+
 document.getElementById("load-trend").addEventListener("click", loadTrend);
+
 document.getElementById("reset-zoom").addEventListener("click", () => {
   if (chart) {
     chart.resetZoom();
   }
 });
+
+updateCustomRangeVisibility();
+
+loadConfig()
+  .then(() => loadTrend())
+  .catch((error) => {
+    console.error("Initial trend loading error:", error);
+  });

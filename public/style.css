@@ -600,3 +600,242 @@ h1 {
   color: #ffc400;
   font-weight: bold;
 }
+
+/* =========================================
+   Trends page
+   ========================================= */
+
+.trend-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.trend-control {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.trend-control label {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.trend-control select {
+  min-width: 150px;
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid #555;
+  border-radius: 7px;
+  background: #222;
+  color: #fff;
+  font-size: 15px;
+}
+
+.trend-button {
+  height: 42px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.trend-button-primary {
+  background: #1976d2;
+  color: #fff;
+}
+
+.trend-button-secondary {
+  background: #444;
+  color: #fff;
+}
+
+.trend-button:hover {
+  opacity: 0.9;
+}
+
+.custom-range {
+  display: none;
+  width: 100%;
+  box-sizing: border-box;
+  grid-template-columns: repeat(2, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 4px;
+  padding: 18px;
+  border: 1px solid #444;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.custom-range.visible {
+  display: grid;
+}
+
+.custom-range-title {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 16px;
+}
+
+.custom-range-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.custom-range-field label {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+jalali-date-picker {
+  width: 100%;
+  display: block;
+}
+
+.trend-help {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+@media (max-width: 700px) {
+  .custom-range {
+    grid-template-columns: 1fr;
+  }
+
+  .custom-range-title,
+  .trend-help {
+    grid-column: auto;
+  }
+}
+/* =========================================
+   Jalali date/time picker
+   ========================================= */
+
+.jalali-picker {
+  width: 100%;
+  max-width: 380px;
+  box-sizing: border-box;
+  padding: 16px;
+  border: 1px solid #444;
+  border-radius: 10px;
+  background: #1f1f1f;
+  color: #fff;
+}
+
+.jalali-picker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.jalali-picker-title {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.jalali-picker-nav {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #555;
+  border-radius: 6px;
+  background: #2d2d2d;
+  color: #fff;
+  cursor: pointer;
+  font-size: 22px;
+}
+
+.jalali-picker-nav:hover {
+  background: #3a3a3a;
+}
+
+.jalali-picker-weekdays,
+.jalali-picker-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+.jalali-picker-weekdays {
+  margin-bottom: 6px;
+  text-align: center;
+  font-size: 12px;
+  color: #aaa;
+}
+
+.jalali-picker-days button {
+  width: 100%;
+  aspect-ratio: 1;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+}
+
+.jalali-picker-days button:hover {
+  background: #333;
+}
+
+.jalali-picker-days button.selected {
+  background: #1976d2;
+  color: #fff;
+  font-weight: bold;
+}
+
+.jalali-picker-time {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid #444;
+}
+
+.jalali-picker-time-title {
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.jalali-picker-time-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.jalali-picker-time-controls select {
+  width: 90px;
+  height: 40px;
+  border: 1px solid #555;
+  border-radius: 6px;
+  background: #2a2a2a;
+  color: #fff;
+  text-align: center;
+  font-size: 16px;
+}
+
+.jalali-picker-selected {
+  margin-top: 14px;
+  padding: 9px;
+  border-radius: 6px;
+  background: #292929;
+  text-align: center;
+  font-size: 14px;
+  direction: ltr;
+}
+
+@media (max-width: 700px) {
+  .jalali-picker {
+    max-width: 100%;
+  }
+
+  .custom-range {
+    grid-template-columns: 1fr;
+  }
+}

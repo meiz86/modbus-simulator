@@ -8,7 +8,7 @@ function createTransducer(transducer) {
   const { id, port, mode, updateIntervalMs } = transducer;
   const netServer = new net.Server();
   if (mode === "disconnect") {
-    console.log(`Transducer ${id} is DISCONNECTED`);
+    // console.log(`Transducer ${id} is DISCONNECTED`);
     return;
   }
 
@@ -26,7 +26,7 @@ function createTransducer(transducer) {
 
     holding.writeUInt16BE(registerValue, 0);
 
-    console.log(`T${String(id).padStart(2, "0")} | ${frequency.toFixed(2)} Hz`);
+    // console.log(`T${String(id).padStart(2, "0")} | ${frequency.toFixed(2)} Hz`);
   }
 
 updateFrequency();
@@ -38,15 +38,15 @@ setInterval(updateFrequency, updateIntervalMs);
   });
 
 netServer.listen(port, HOST, () => {
-  console.log(
-    `Transducer ${id} listening on ${HOST}:${port} | interval: ${updateIntervalMs} ms`
-  );
+  // console.log(
+    // `Transducer ${id} listening on ${HOST}:${port} | interval: ${updateIntervalMs} ms`
+  // );
 });
 
 netServer.on("error", (err) => {
-  console.log(
-    `Transducer ${id} listening on ${HOST}:${port} | interval: ${updateIntervalMs} ms`
-  );
+  // console.log(
+  //   `Transducer ${id} listening on ${HOST}:${port} | interval: ${updateIntervalMs} ms`
+  // );
 });
 
   netServer.on("error", (err) => {

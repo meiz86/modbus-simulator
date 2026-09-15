@@ -2,40 +2,32 @@ const Database = require("better-sqlite3");
 
 const db = new Database("data.db");
 
-db.exec(`
-  CREATE TABLE IF NOT EXISTS alarm_events (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    transducer_id INTEGER NOT NULL,
-    event_type TEXT NOT NULL,
-    alarm_code TEXT,
-    message TEXT NOT NULL,
-    frequency REAL NOT NULL,
-    timestamp TEXT NOT NULL
-  )
-`);
-
 function saveAlarmEvent(event) {
   const stmt = db.prepare(`
     INSERT INTO alarm_events (
       transducer_id,
       event_type,
+      state,
       alarm_code,
       message,
       frequency,
-      timestamp
+      timestamp,
+      operator
     )
-    VALUES (?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
   `);
 
   stmt.run(
     event.transducerId,
     event.eventType,
-    event.alarmCode,
-    event.message,
-    event.frequency,
+    event.state || null,
+    event.alarmCode || null,
+    event.message || null,
+    event.frequency ?? null,
     event.timestamp
       ? new Date(event.timestamp).toISOString()
       : new Date().toISOString(),
+    event.operator || null,
   );
 }
 
@@ -47,10 +39,12 @@ function getRecentAlarmEvents(limit = 100) {
         id,
         transducer_id,
         event_type,
+        state,
         alarm_code,
         message,
         frequency,
-        timestamp
+        timestamp,
+        operator
       FROM alarm_events
       ORDER BY id DESC
       LIMIT ?
@@ -58,6 +52,7 @@ function getRecentAlarmEvents(limit = 100) {
     )
     .all(limit);
 }
+
 function getRecentAlarmEventsByTransducer(transducerId, limit = 100) {
   return db
     .prepare(
@@ -66,10 +61,12 @@ function getRecentAlarmEventsByTransducer(transducerId, limit = 100) {
         id,
         transducer_id,
         event_type,
+        state,
         alarm_code,
         message,
         frequency,
-        timestamp
+        timestamp,
+        operator
       FROM alarm_events
       WHERE transducer_id = ?
       ORDER BY id DESC

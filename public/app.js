@@ -1,6 +1,7 @@
 const container = document.getElementById("transducers");
 const status = document.getElementById("status");
 
+
 // const FREQUENCY_LIMITS = {
 //   lowAlarm: 49.2,
 
@@ -10,6 +11,7 @@ const status = document.getElementById("status");
 
 //   highAlarm: 49.93,
 // };
+let COMMUNICATION_LIMITS = null;
 let FREQUENCY_LIMITS = null;
 async function loadConfig() {
   // FREQUENCY_LIMITS = data.frequency;
@@ -18,6 +20,7 @@ async function loadConfig() {
   const data = await response.json();
 
   FREQUENCY_LIMITS = data.frequency;
+  COMMUNICATION_LIMITS = data.communication;
 }
 function getFrequencyState(frequency) {
   if (frequency <= FREQUENCY_LIMITS.lowAlarm) {
@@ -154,10 +157,10 @@ async function updateTransducer(id) {
     let statusText;
     let statusClass;
 
-    if (ageSeconds <= 3) {
+    if (ageSeconds <= COMMUNICATION_LIMITS.staleAfterSeconds) {
       statusText = "🟢 ارتباط برقرار";
       statusClass = "status-ok";
-    } else if (ageSeconds <= 10) {
+    } else if (ageSeconds <= COMMUNICATION_LIMITS.alarmAfterSeconds) {
       statusText = "🟠 ارتباط قدیمی";
       statusClass = "status-stale";
     } else {
@@ -196,11 +199,11 @@ async function updateTransducer(id) {
     element.querySelector(".age").textContent =
       `سن اندازه‌گیری: ${toPersianDigits(ageSeconds.toFixed(1))} ثانیه`;
 
-    if (ageSeconds > 15) {
+    if (ageSeconds > COMMUNICATION_LIMITS.alarmAfterSeconds) {
       return "error";
     }
 
-    if (ageSeconds > 5) {
+    if (ageSeconds > COMMUNICATION_LIMITS.staleAfterSeconds) {
       return "stale";
     }
 
@@ -210,8 +213,7 @@ async function updateTransducer(id) {
 
     const frequencyElement = element.querySelector(".frequency");
 
-    frequencyElement.className = `frequency ${frequencyClass}`;
-    frequencyElement.textContent = "-- هرتز";
+    frequencyElement.className = "frequency"; frequencyElement.textContent = "-- هرتز";
 
     const frequencyStatusElement = element.querySelector(".frequency-status");
 

@@ -11,7 +11,7 @@ const testValues = [
 for (const frequency of testValues) {
     const result = evaluateFrequency(frequency);
 
-    console.log(
-        `${frequency.toFixed(2)} Hz → ${result.state} → ${result.message}`
-    );
+    // console.log(
+    //     `${frequency.toFixed(2)} Hz → ${result.state} → ${result.message}`
+    // );
 }

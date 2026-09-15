@@ -24,61 +24,85 @@ db.exec(`
     acknowledged_by TEXT
   )
 `);
+
 db.exec(`
   CREATE INDEX IF NOT EXISTS idx_measurements_transducer_timestamp
   ON measurements (transducer_id, timestamp)
 `);
-db.exec(`
-  CREATE TABLE IF NOT EXISTS alarm_events (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-    transducer_id INTEGER NOT NULL,
+const alarmEventsColumns = db.prepare(`PRAGMA table_info(alarm_events)`).all();
 
-    event_type TEXT NOT NULL,
-
-    state TEXT,
-
-    alarm_code TEXT,
-
-    message TEXT,
-
-    frequency REAL,
-
-    created_at TEXT NOT NULL,
-
-    operator TEXT
-  )
-`);
-try {
+if (alarmEventsColumns.length === 0) {
   db.exec(`
-    ALTER TABLE alarm_states
-    ADD COLUMN acknowledged INTEGER NOT NULL DEFAULT 0
+    CREATE TABLE alarm_events (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      transducer_id INTEGER NOT NULL,
+      event_type TEXT NOT NULL,
+      state TEXT,
+      alarm_code TEXT,
+      message TEXT NOT NULL,
+      frequency REAL,
+      timestamp TEXT NOT NULL,
+      operator TEXT
+    )
   `);
-} catch (error) {
-  if (!error.message.includes("duplicate column name")) {
-    throw error;
-  }
-}
+} else {
+  const hasTimestamp = alarmEventsColumns.some(
+    (column) => column.name === "timestamp",
+  );
 
-try {
-  db.exec(`
-    ALTER TABLE alarm_states
-    ADD COLUMN acknowledged_at TEXT
-  `);
-} catch (error) {
-  if (!error.message.includes("duplicate column name")) {
-    throw error;
-  }
-}
+  const hasCreatedAt = alarmEventsColumns.some(
+    (column) => column.name === "created_at",
+  );
 
-try {
-  db.exec(`
-    ALTER TABLE alarm_states
-    ADD COLUMN acknowledged_by TEXT
-  `);
-} catch (error) {
-  if (!error.message.includes("duplicate column name")) {
-    throw error;
+  if (!hasTimestamp && hasCreatedAt) {
+    db.exec(`
+      ALTER TABLE alarm_events
+      RENAME TO alarm_events_old
+    `);
+
+    db.exec(`
+      CREATE TABLE alarm_events (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        transducer_id INTEGER NOT NULL,
+        event_type TEXT NOT NULL,
+        state TEXT,
+        alarm_code TEXT,
+        message TEXT NOT NULL,
+        frequency REAL,
+        timestamp TEXT NOT NULL,
+        operator TEXT
+      )
+    `);
+
+    db.exec(`
+      INSERT INTO alarm_events (
+        id,
+        transducer_id,
+        event_type,
+        state,
+        alarm_code,
+        message,
+        frequency,
+        timestamp,
+        operator
+      )
+      SELECT
+        id,
+        transducer_id,
+        event_type,
+        state,
+        alarm_code,
+        message,
+        frequency,
+        created_at,
+        operator
+      FROM alarm_events_old
+    `);
+
+    db.exec(`
+      DROP TABLE alarm_events_old
+    `);
   }
 }
 
@@ -137,34 +161,26 @@ function getRecentMeasurementsByTransducer(transducerId, limit = 100) {
     )
     .all(transducerId, limit);
 }
-function saveAlarmEvent(event) {
-  const stmt = db.prepare(`
-    INSERT INTO alarm_events (
-      transducer_id,
-      event_type,
-      state,
-      alarm_code,
-      message,
-      frequency,
-      timestamp,
-      operator
-    )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-  `);
 
-  stmt.run(
-    event.transducerId,
-    event.eventType,
-    event.state || null,
-    event.alarmCode || null,
-    event.message || null,
-    event.frequency || null,
-    event.timestamp
-      ? new Date(event.timestamp).toISOString()
-      : new Date().toISOString(),
-    event.operator || null,
-  );
+function getLatestMeasurementByTransducer(transducerId) {
+  return db
+    .prepare(
+      `
+      SELECT
+        id,
+        transducer_id,
+        timestamp,
+        raw_value,
+        frequency
+      FROM measurements
+      WHERE transducer_id = ?
+      ORDER BY timestamp DESC
+      LIMIT 1
+    `,
+    )
+    .get(transducerId);
 }
+
 function getMeasurementsByTimeRange(transducerId, from, to) {
   return db
     .prepare(
@@ -188,24 +204,6 @@ function getMeasurementsByTimeRange(transducerId, from, to) {
       new Date(to).toISOString(),
     );
 }
-function getLatestMeasurementByTransducer(transducerId) {
-  return db
-    .prepare(
-      `
-      SELECT
-        id,
-        transducer_id,
-        timestamp,
-        raw_value,
-        frequency
-      FROM measurements
-      WHERE transducer_id = ?
-      ORDER BY timestamp DESC
-      LIMIT 1
-    `,
-    )
-    .get(transducerId);
-}
 
 function saveAlarmState(state) {
   const stmt = db.prepare(`
@@ -220,6 +218,7 @@ function saveAlarmState(state) {
       acknowledged_by
     )
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+
     ON CONFLICT(transducer_id)
     DO UPDATE SET
       state = excluded.state,
@@ -242,6 +241,7 @@ function saveAlarmState(state) {
     state.acknowledgedBy || null,
   );
 }
+
 function getAlarmState(transducerId) {
   return db
     .prepare(
@@ -281,30 +281,108 @@ function getAllAlarmStates() {
     )
     .all();
 }
+
 function acknowledgeAlarm(transducerId, acknowledgedBy) {
   const timestamp = new Date();
 
-  const stmt = db.prepare(`
-    UPDATE alarm_states
-    SET
-      acknowledged = 1,
-      acknowledged_at = ?,
-      acknowledged_by = ?
-    WHERE transducer_id = ?
-      AND state IN ('ALARM', 'WARNING')
-  `);
+  const currentState = getAlarmState(transducerId);
 
-  const result = stmt.run(
-    timestamp.toISOString(),
-    acknowledgedBy,
-    transducerId,
-  );
+  if (
+    !currentState ||
+    !["ALARM", "WARNING"].includes(currentState.state) ||
+    currentState.acknowledged
+  ) {
+    return {
+      updated: false,
+      timestamp,
+    };
+  }
+
+  const transaction = db.transaction(() => {
+    const stmt = db.prepare(`
+      UPDATE alarm_states
+      SET
+        acknowledged = 1,
+        acknowledged_at = ?,
+        acknowledged_by = ?
+      WHERE transducer_id = ?
+        AND state IN ('ALARM', 'WARNING')
+        AND acknowledged = 0
+    `);
+
+    const result = stmt.run(
+      timestamp.toISOString(),
+      acknowledgedBy,
+      transducerId,
+    );
+
+    if (result.changes === 0) {
+      return false;
+    }
+
+    const eventStmt = db.prepare(`
+      INSERT INTO alarm_events (
+        transducer_id,
+        event_type,
+        state,
+        alarm_code,
+        message,
+        frequency,
+        timestamp,
+        operator
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+
+    eventStmt.run(
+      transducerId,
+      "ACKNOWLEDGED",
+      currentState.state,
+      currentState.alarm_code,
+      "تایید اپراتور",
+      null,
+      timestamp.toISOString(),
+      acknowledgedBy,
+    );
+
+    return true;
+  });
 
   return {
-    updated: result.changes > 0,
+    updated: transaction(),
     timestamp,
   };
 }
+
+function saveAlarmEvent(event) {
+  const stmt = db.prepare(`
+    INSERT INTO alarm_events (
+      transducer_id,
+      event_type,
+      state,
+      alarm_code,
+      message,
+      frequency,
+      timestamp,
+      operator
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  `);
+
+  stmt.run(
+    event.transducerId,
+    event.eventType,
+    event.state || null,
+    event.alarmCode || null,
+    event.message || null,
+    event.frequency ?? null,
+    event.timestamp
+      ? new Date(event.timestamp).toISOString()
+      : new Date().toISOString(),
+    event.operator || null,
+  );
+}
+
 function getAlarmEvents(limit = 100) {
   return db
     .prepare(
@@ -326,6 +404,7 @@ function getAlarmEvents(limit = 100) {
     )
     .all(limit);
 }
+
 function getMeasurementStats(transducerId, from, to) {
   return db
     .prepare(
@@ -347,6 +426,7 @@ function getMeasurementStats(transducerId, from, to) {
       new Date(to).toISOString(),
     );
 }
+
 module.exports = {
   saveMeasurement,
   getRecentMeasurements,

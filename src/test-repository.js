@@ -8,8 +8,8 @@ const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
 
 const rangeMeasurements = repository.getByTimeRange(1, oneHourAgo, now);
 
-console.log("Time range measurements:", rangeMeasurements.length);
+// console.log("Time range measurements:", rangeMeasurements.length);
 
 const stats = repository.getStats(1, oneHourAgo, now);
 
-console.log("Measurement stats:", stats);
+// console.log("Measurement stats:", stats);

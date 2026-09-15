@@ -14,34 +14,81 @@
     <header class="page-header">
       <h1>📈 روند فرکانس</h1>
 
-      <a href="/"> بازگشت به داشبورد </a>
+      <a href="/">بازگشت به داشبورد</a>
     </header>
 
     <div class="trend-controls">
-      <label> ترانسدیوسر: </label>
+      <div class="trend-control">
+        <label for="transducer-select"> ترانسدیوسر </label>
 
-      <select id="transducer-select">
-        <option value="1">ترانسدیوسر ۱</option>
+        <select id="transducer-select">
+          <option value="1">ترانسدیوسر ۱</option>
+          <option value="2">ترانسدیوسر ۲</option>
+          <option value="3">ترانسدیوسر ۳</option>
+          <option value="4">ترانسدیوسر ۴</option>
+          <option value="5">ترانسدیوسر ۵</option>
+          <option value="6">ترانسدیوسر ۶</option>
+          <option value="7">ترانسدیوسر ۷</option>
+          <option value="8">ترانسدیوسر ۸</option>
+          <option value="9">ترانسدیوسر ۹</option>
+          <option value="10">ترانسدیوسر ۱۰</option>
+        </select>
+      </div>
 
-        <option value="2">ترانسدیوسر ۲</option>
+      <div class="trend-control">
+        <label for="range-select"> بازه زمانی </label>
 
-        <option value="3">ترانسدیوسر ۳</option>
-      </select>
+        <select id="range-select">
+          <option value="1">۱ دقیقه</option>
+          <option value="5">۵ دقیقه</option>
+          <option value="15">۱۵ دقیقه</option>
+          <option value="60" selected>۱ ساعت</option>
+          <option value="1440">۱ روز</option>
+          <option value="custom">بازه سفارشی</option>
+        </select>
+      </div>
 
-      <button id="load-trend">نمایش</button>
-      <button id="reset-zoom">بازنشانی زوم</button>
+      <button id="load-trend" class="trend-button trend-button-primary">
+        نمایش روند
+      </button>
+
+      <button id="reset-zoom" class="trend-button trend-button-secondary">
+        بازنشانی زوم
+      </button>
+
+      <div id="custom-range" class="custom-range">
+        <h2 class="custom-range-title">انتخاب بازه سفارشی</h2>
+
+        <div class="custom-range-field">
+          <label> تاریخ و زمان شروع </label>
+
+          <div id="custom-from"></div>
+        </div>
+
+        <div class="custom-range-field">
+          <label> تاریخ و زمان پایان </label>
+
+          <div id="custom-to"></div>
+        </div>
+
+        <p class="trend-help">تاریخ شمسی و ساعت را از تقویم انتخاب کنید.</p>
+      </div>
     </div>
 
     <div id="statistics"></div>
 
     <div class="trend-chart">
-      <canvas id="frequency-chart"> </canvas>
+      <canvas id="frequency-chart"></canvas>
     </div>
+
+    <script src="/jalali-picker.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+
     <script src="/trends.js"></script>
   </body>
 </html>

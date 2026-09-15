@@ -2,6 +2,7 @@ const net = require("net");
 const Modbus = require("jsmodbus");
 const config = require("./config");
 const handleMeasurement = require("./measurement-handler");
+const communicationMonitor = require("./communication-monitor");
 
 function startTransducer(transducer) {
   const socket = new net.Socket();
@@ -14,7 +15,7 @@ function startTransducer(transducer) {
   socket.connect(transducer.port, config.host, () => {
     reconnectScheduled = false;
 
-    console.log(`T${String(transducer.id).padStart(2, "0")} | CONNECTED`);
+    // console.log(`T${String(transducer.id).padStart(2, "0")} | CONNECTED`);
 
     readLoop();
   });
@@ -63,7 +64,7 @@ function startTransducer(transducer) {
   });
 
   socket.on("close", () => {
-    console.log(`T${String(transducer.id).padStart(2, "0")} | DISCONNECTED`);
+    // console.log(`T${String(transducer.id).padStart(2, "0")} | DISCONNECTED`);
 
     if (reconnectScheduled) {
       return;
@@ -72,7 +73,7 @@ function startTransducer(transducer) {
     reconnectScheduled = true;
 
     setTimeout(() => {
-      console.log(`T${String(transducer.id).padStart(2, "0")} | RECONNECTING`);
+      // console.log(`T${String(transducer.id).padStart(2, "0")} | RECONNECTING`);
 
       startTransducer(transducer);
     }, 2000);
@@ -82,3 +83,4 @@ function startTransducer(transducer) {
 for (const transducer of config.transducers) {
   startTransducer(transducer);
 }
+communicationMonitor.start();

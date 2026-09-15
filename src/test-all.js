@@ -17,7 +17,7 @@ function readTransducer(id, port) {
         const value = response.response.body.valuesAsArray[0];
         const frequency = value / 100;
 
-        console.log(`Transducer ${id}: ${frequency.toFixed(2)} Hz`);
+        // console.log(`Transducer ${id}: ${frequency.toFixed(2)} Hz`);
 
         socket.destroy();
         resolve();

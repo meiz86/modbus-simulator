@@ -24,6 +24,7 @@ app.get("/api/measurements", (req, res) => {
 app.get("/api/config", (req, res) => {
   res.json({
     frequency: config.alarm.frequency,
+    communication: config.alarm.communication,
   });
 });
 app.get("/api/measurements/:transducerId/range", (req, res) => {
